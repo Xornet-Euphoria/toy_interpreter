@@ -28,5 +28,17 @@ int main(int argc, char *argv[]) {
 
         res = eval(nd_head);
         printf("[->] %d\n", res);
+
+        // free tokens
+        Token *next_token;
+        while (tk_head)
+        {
+            next_token = tk_head->next;
+            free(tk_head);
+            tk_head = next_token;
+        }
     }
+
+    free(ctx);
+    return 0;
 }
