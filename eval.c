@@ -21,6 +21,7 @@ int eval(Node *node) {
             break;
         case ND_DIV:
             ret = eval(node->lhs) / eval(node->rhs);
+            break;
         }
 
     free(node);

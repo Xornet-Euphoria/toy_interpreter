@@ -34,8 +34,6 @@ void prim_parse(Context *ctx) {
         next_head_ctx(ctx);
         expr_parse(ctx);
 
-        Node *ret = ctx->ret;
-
         if (is_reserved(ctx->head, ')')) {
             next_head_ctx(ctx);
             return;
@@ -55,19 +53,37 @@ void prim_parse(Context *ctx) {
     ctx->ret = ret;
 }
 
+void un_parse(Context *ctx) {
+    if (is_reserved(ctx->head, '+')) {
+        next_head_ctx(ctx);
+        prim_parse(ctx);
+    } else if (is_reserved(ctx->head, '-')) {
+        next_head_ctx(ctx);
+        prim_parse(ctx);
+        Node *lhs = create_num_node(0);
+        Node *rhs = ctx->ret;
+        Node *node = create_operator_node(ND_SUB, lhs, rhs);
+        ctx->ret = node;
+    }
+    else
+    {
+        prim_parse(ctx);
+    }
+}
+
 void mul_parse(Context *ctx) {
-    prim_parse(ctx);
+    un_parse(ctx);
     Node *node = ctx->ret;
 
     while (1) {
         if (is_reserved(ctx->head, '*')) {
             next_head_ctx(ctx);
-            prim_parse(ctx);
+            un_parse(ctx);
             Node *rhs = ctx->ret;
             node = create_operator_node(ND_MUL, node, rhs);
         } else if (is_reserved(ctx->head, '/')) {
             next_head_ctx(ctx);
-            prim_parse(ctx);
+            un_parse(ctx);
             Node *rhs = ctx->ret;
             node = create_operator_node(ND_DIV, node, rhs);
         } else {
