@@ -40,25 +40,46 @@ void prim_parse(Context *ctx) {
     ctx->ret = ret;
 }
 
-void expr_parse(Context *ctx) {
+void mul_parse(Context *ctx) {
     prim_parse(ctx);
     Node *node = ctx->ret;
 
-    while (ctx->head) {
-        if (is_reserved(ctx->head, '+')) {
+    while (1) {
+        if (is_reserved(ctx->head, '*')) {
             next_head_ctx(ctx);
             prim_parse(ctx);
+            Node *rhs = ctx->ret;
+            node = create_operator_node(ND_MUL, node, rhs);
+        } else if (is_reserved(ctx->head, '/')) {
+            next_head_ctx(ctx);
+            prim_parse(ctx);
+            Node *rhs = ctx->ret;
+            node = create_operator_node(ND_DIV, node, rhs);
+        } else {
+            ctx->ret = node;
+            return;
+        }
+    }
+}
+
+void expr_parse(Context *ctx) {
+    mul_parse(ctx);
+    Node *node = ctx->ret;
+
+    while (1) {
+        if (is_reserved(ctx->head, '+')) {
+            next_head_ctx(ctx);
+            mul_parse(ctx);
             Node *rhs = ctx->ret;
             node = create_operator_node(ND_ADD, node, rhs);
         } else if (is_reserved(ctx->head, '-')) {
             next_head_ctx(ctx);
-            prim_parse(ctx);
+            mul_parse(ctx);
             Node *rhs = ctx->ret;
             node = create_operator_node(ND_SUB, node, rhs);
+        } else {
+            ctx->ret = node;
+            return;
         }
     }
-
-    ctx->ret = node;
-
-    return;
 }

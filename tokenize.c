@@ -38,7 +38,7 @@ Token *tokenize(char *p) {
             int n = strtol(p, &p, 0);
             token->val = n;
         }
-        else if (*p == '+' || *p == '-')
+        else if (strchr("+-*/", *p))
         {
             token = create_token(p, TK_RESERVED);
             p += 1;
@@ -76,6 +76,10 @@ void dump_token(Token *token) {
 }
 
 int is_reserved(Token *token, char operator) {
+    if (token == NULL) {
+        return 0;
+    }
+
     if (token->type != TK_RESERVED) {
         return 0;
     }

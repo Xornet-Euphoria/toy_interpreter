@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "eval.h"
 
 int eval(Node *node) {
@@ -11,5 +12,13 @@ int eval(Node *node) {
 
     if (node->type == ND_SUB) {
         return eval(node->lhs) - eval(node->rhs);
+    }
+
+    if (node->type == ND_MUL) {
+        return eval(node->lhs) * eval(node->rhs);
+    }
+
+    if (node->type == ND_DIV) {
+        return eval(node->lhs) / eval(node->rhs);
     }
 }
