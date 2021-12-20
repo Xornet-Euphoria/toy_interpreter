@@ -29,6 +29,21 @@ void next_head_ctx(Context *ctx) {
 
 void prim_parse(Context *ctx) {
     Token *head = ctx->head;
+
+    if (is_reserved(head, '(')) {
+        next_head_ctx(ctx);
+        expr_parse(ctx);
+
+        Node *ret = ctx->ret;
+
+        if (is_reserved(ctx->head, ')')) {
+            next_head_ctx(ctx);
+            return;
+        } else {
+            fprintf(stderr, "[!] `)` is expected, but %c is given", ctx->head->raw[0]);
+            exit(1);
+        }
+    }
     if (head->type != TK_NUM)
     {
         fprintf(stderr, "[!] `TK_NUM (%d)` is expected, but %d is given as primary.", TK_NUM, head->type);

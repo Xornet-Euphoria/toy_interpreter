@@ -38,7 +38,7 @@ Token *tokenize(char *p) {
             int n = strtol(p, &p, 0);
             token->val = n;
         }
-        else if (strchr("+-*/", *p))
+        else if (strchr("+-*/()", *p))
         {
             token = create_token(p, TK_RESERVED);
             p += 1;
