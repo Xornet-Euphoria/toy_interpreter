@@ -16,4 +16,9 @@ struct Node {
     int val;
 };
 
-extern Node *expr_parse(Token *head);
+typedef struct {
+    Token *head;
+    Node *ret;
+} Context;
+
+extern void expr_parse(Context *ctx);

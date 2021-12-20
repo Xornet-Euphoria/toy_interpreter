@@ -23,32 +23,42 @@ Node *create_operator_node(NodeType type, Node *lhs, Node *rhs) {
     return ret;
 }
 
-Node *prim_parse(Token *head) {
-    if (head->type != TK_NUM) {
+void next_head_ctx(Context *ctx) {
+    ctx->head = ctx->head->next;
+}
+
+void prim_parse(Context *ctx) {
+    Token *head = ctx->head;
+    if (head->type != TK_NUM)
+    {
         fprintf(stderr, "[!] `TK_NUM (%d)` is expected, but %d is given as primary.", TK_NUM, head->type);
         exit(1);
     }
 
-    return create_num_node(head->val);
+    Node *ret = create_num_node(head->val);
+    next_head_ctx(ctx);
+    ctx->ret = ret;
 }
 
-Node *expr_parse(Token *head) {
-    Node *node = prim_parse(head);
-    head = head->next;
+void expr_parse(Context *ctx) {
+    prim_parse(ctx);
+    Node *node = ctx->ret;
 
-    while (head) {
-        if (is_reserved(head, '+')) {
-            head = head->next;
-            Node *rhs = prim_parse(head);
-            head = head->next;
+    while (ctx->head) {
+        if (is_reserved(ctx->head, '+')) {
+            next_head_ctx(ctx);
+            prim_parse(ctx);
+            Node *rhs = ctx->ret;
             node = create_operator_node(ND_ADD, node, rhs);
-        } else if (is_reserved(head, '-')) {
-            head = head->next;
-            Node *rhs = prim_parse(head);
-            head = head->next;
+        } else if (is_reserved(ctx->head, '-')) {
+            next_head_ctx(ctx);
+            prim_parse(ctx);
+            Node *rhs = ctx->ret;
             node = create_operator_node(ND_SUB, node, rhs);
         }
     }
 
-    return node;
+    ctx->ret = node;
+
+    return;
 }

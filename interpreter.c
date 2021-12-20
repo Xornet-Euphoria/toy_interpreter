@@ -10,6 +10,7 @@ int main(int argc, char *argv[]) {
     char input[INPUT_MAX];
     Token *tk_head;
     Node *nd_head;
+    Context *ctx = malloc(sizeof(Context));
     int res;
     while (1)
     {
@@ -21,7 +22,9 @@ int main(int argc, char *argv[]) {
         }
 
         tk_head = tokenize(input);
-        nd_head = expr_parse(tk_head);
+        ctx->head = tk_head;
+        expr_parse(ctx);
+        nd_head = ctx->ret;
 
         res = eval(nd_head);
         printf("[->] %d\n", res);
