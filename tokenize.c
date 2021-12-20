@@ -60,6 +60,10 @@ Token *tokenize(char *p) {
         current = token;
     }
 
+    if (current) {
+        current->next = NULL;
+    }
+
     return ret;
 }
 
@@ -69,4 +73,16 @@ void dump_token(Token *token) {
         printf("[+] Number: %d\n", token->val);
     }
     printf("[+] raw string: %s\n", token->raw);
+}
+
+int is_reserved(Token *token, char operator) {
+    if (token->type != TK_RESERVED) {
+        return 0;
+    }
+
+    if (token->raw[0] == operator) {
+        return 1;
+    }
+
+    return 0;
 }

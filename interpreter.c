@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "tokenize.h"
+#include "eval.h"
 
 #define INPUT_MAX 256
 
 
 int main(int argc, char *argv[]) {
     char input[INPUT_MAX];
-    Token *head;
+    Token *tk_head;
+    Node *nd_head;
+    int res;
     while (1)
     {
         printf("[<-] ");
@@ -18,10 +20,10 @@ int main(int argc, char *argv[]) {
             break;
         }
 
-        head = tokenize(input);
-        while (head) {
-            dump_token(head);
-            head = head->next;
-        }
+        tk_head = tokenize(input);
+        nd_head = expr_parse(tk_head);
+
+        res = eval(nd_head);
+        printf("[->] %d\n", res);
     }
 }
