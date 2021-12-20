@@ -1,6 +1,9 @@
-CC := gcc
+CC = gcc
+PRG = interpreter
+OBJ = interpreter.c tokenize.c
 
-interpreter:
+$(PRG): $(OBJ)
+	$(CC) -o $@ $^
 
 clean:
-	$(RM) interpreter
+	$(RM) $(PRG)
