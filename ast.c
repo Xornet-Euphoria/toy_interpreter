@@ -23,6 +23,14 @@ Node *create_operator_node(NodeType type, Node *lhs, Node *rhs) {
     return ret;
 }
 
+Node *create_var_node(Var *p) {
+    Node *ret = malloc(sizeof(Node));
+    ret->type = ND_VAR;
+    ret->var = p;
+
+    return ret;
+}
+
 void next_head_ctx(Context *ctx) {
     ctx->head = ctx->head->next;
 }
@@ -42,6 +50,37 @@ void prim_parse(Context *ctx) {
             exit(1);
         }
     }
+
+    if (head->type == TK_IDENT) {
+        int length = head->length;
+        char *name = calloc(1, length + 1);
+        strncpy(name, head->raw, length);
+
+        Var *current_var = ctx->var_head;
+        while (current_var) {
+            if (strcmp(current_var->name, name) == 0) {
+                Node *ret = create_var_node(current_var);
+                next_head_ctx(ctx);
+                ctx->ret = ret;
+                return;
+            }
+
+            current_var = current_var->next;
+        }
+
+        // register new variable
+        Var *new_var = malloc(sizeof(Var));
+        new_var->name = name;
+        new_var->next = ctx->var_head;
+        ctx->var_head = new_var;
+
+        // create new variable node
+        next_head_ctx(ctx);
+        ctx->ret = create_var_node(new_var);
+
+        return;
+    }
+
     if (head->type != TK_NUM)
     {
         fprintf(stderr, "[!] `TK_NUM (%d)` is expected, but %d is given as primary.", TK_NUM, head->type);
@@ -115,7 +154,7 @@ void add_parse(Context *ctx) {
     }
 }
 
-void expr_parse(Context *ctx) {
+void eq_parse(Context *ctx) {
     add_parse(ctx);
     Node *node = ctx->ret;
 
@@ -135,4 +174,18 @@ void expr_parse(Context *ctx) {
             return;
         }
     }
+}
+
+void expr_parse(Context *ctx) {
+    eq_parse(ctx);
+    Node *node = ctx->ret;
+
+    if (is_reserved(ctx->head, "=")) {
+        next_head_ctx(ctx);
+        expr_parse(ctx);
+        Node *rhs = ctx->ret;
+        node = create_operator_node(ND_ASSIGN, node, rhs);
+        ctx->ret = node;
+    }
+
 }

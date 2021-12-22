@@ -11,6 +11,7 @@ int main(int argc, char *argv[]) {
     Token *tk_head;
     Node *nd_head;
     Context *ctx = malloc(sizeof(Context));
+    ctx->var_head = NULL;
     int res;
     while (1)
     {
@@ -25,18 +26,8 @@ int main(int argc, char *argv[]) {
         ctx->head = tk_head;
         expr_parse(ctx);
         nd_head = ctx->ret;
-
         res = eval(nd_head);
         printf("[->] %d\n", res);
-
-        // free tokens
-        Token *next_token;
-        while (tk_head)
-        {
-            next_token = tk_head->next;
-            free(tk_head);
-            tk_head = next_token;
-        }
     }
 
     free(ctx);

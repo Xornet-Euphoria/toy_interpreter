@@ -27,7 +27,6 @@ int main(int argc, char *argv[]) {
         {
             dump_token(tk_head);
             next_token = tk_head->next;
-            free(tk_head);
             tk_head = next_token;
         }
     }

@@ -10,6 +10,9 @@ int eval(Node *node) {
         case ND_NUM:
             ret = node->val;
             break;
+        case ND_VAR:
+            ret = node->var->val;
+            break;
         case ND_ADD:
             ret = eval(node->lhs) + eval(node->rhs);
             break;
@@ -28,8 +31,11 @@ int eval(Node *node) {
         case ND_NEQ:
             ret = eval(node->lhs) != eval(node->rhs);
             break;
+        case ND_ASSIGN:
+            ret = eval(node->rhs);
+            node->lhs->var->val = ret;
+            break;
         }
 
-    free(node);
     return ret;
 }

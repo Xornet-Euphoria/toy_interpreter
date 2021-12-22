@@ -5,8 +5,8 @@
 #include "tokenize.h"
 
 char *reserved_tokens[] = {
-    "+", "-", "*", "/", "(", ")",
-    "==", "!="
+    "==", "!=",
+    "+", "-", "*", "/", "(", ")", "="
 };
 // added in the futured. (currently, RESERVED variable literally)
 char *reserved_string_tokens[] = {
@@ -109,9 +109,7 @@ int is_reserved(Token *token, char *reserved) {
         return 0;
     }
 
-    int l = token->length;
-
-    if (strncmp(token->raw, reserved, l) == 0) {
+    if (strncmp(token->raw, reserved, strlen(reserved)) == 0) {
         return 1;
     }
 
