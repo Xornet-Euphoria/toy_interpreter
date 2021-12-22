@@ -93,7 +93,7 @@ void mul_parse(Context *ctx) {
     }
 }
 
-void expr_parse(Context *ctx) {
+void add_parse(Context *ctx) {
     mul_parse(ctx);
     Node *node = ctx->ret;
 
@@ -108,6 +108,28 @@ void expr_parse(Context *ctx) {
             mul_parse(ctx);
             Node *rhs = ctx->ret;
             node = create_operator_node(ND_SUB, node, rhs);
+        } else {
+            ctx->ret = node;
+            return;
+        }
+    }
+}
+
+void expr_parse(Context *ctx) {
+    add_parse(ctx);
+    Node *node = ctx->ret;
+
+    while (1) {
+        if (is_reserved(ctx->head, "==")) {
+            next_head_ctx(ctx);
+            add_parse(ctx);
+            Node *rhs = ctx->ret;
+            node = create_operator_node(ND_EQ, node, rhs);
+        } else if (is_reserved(ctx->head, "!=")) {
+            next_head_ctx(ctx);
+            add_parse(ctx);
+            Node *rhs = ctx->ret;
+            node = create_operator_node(ND_NEQ, node, rhs);
         } else {
             ctx->ret = node;
             return;

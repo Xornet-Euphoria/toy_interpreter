@@ -22,6 +22,12 @@ int eval(Node *node) {
         case ND_DIV:
             ret = eval(node->lhs) / eval(node->rhs);
             break;
+        case ND_EQ:
+            ret = eval(node->lhs) == eval(node->rhs);
+            break;
+        case ND_NEQ:
+            ret = eval(node->lhs) != eval(node->rhs);
+            break;
         }
 
     free(node);

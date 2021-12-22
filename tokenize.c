@@ -5,7 +5,8 @@
 #include "tokenize.h"
 
 char *reserved_tokens[] = {
-    "+", "-", "*", "/", "(", ")"
+    "+", "-", "*", "/", "(", ")",
+    "==", "!="
 };
 const int reserved_count = sizeof(reserved_tokens);
 
