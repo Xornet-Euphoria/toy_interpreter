@@ -82,7 +82,9 @@ Token *tokenize(char *p) {
 
 void dump_token(Token *token) {
     printf("[+] Type: %d\n", token->type);
-    if (token->type == TK_NUM) {
+    printf("[+] Length: %d\n", token->length);
+    if (token->type == TK_NUM)
+    {
         printf("[+] Number: %d\n", token->val);
     }
     printf("[+] raw string: %s\n", token->raw);
