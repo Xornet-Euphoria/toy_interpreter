@@ -4,6 +4,11 @@
 #include <ctype.h>
 #include "tokenize.h"
 
+char *reserved_tokens[] = {
+    "+", "-", "*", "/", "(", ")"
+};
+const int reserved_count = sizeof(reserved_tokens);
+
 Token *create_token(char *p, TokenType type) {
     Token *ret = malloc(sizeof(Token));
     ret->type = type;
@@ -12,13 +17,20 @@ Token *create_token(char *p, TokenType type) {
     return ret;
 }
 
-Token *craete_number_token(char *p, int num) {
-    Token *ret = malloc(sizeof(Token));
-    ret->type = TK_NUM;
-    ret->val = num;
-    ret->raw = p;
+int check_reserved(char *p) {
+    int length = 0;
+    char *reserved;
+    for (int i = 0; i < reserved_count; i++)
+    {
+        reserved = reserved_tokens[i];
+        length = strlen(reserved);
+        if (strncmp(p, reserved, length) == 0)
+        {
+            return length;
+        }
+    }
 
-    return ret;
+    return 0;
 }
 
 // return pointer of head token. tokens are in linked list.
@@ -37,17 +49,17 @@ Token *tokenize(char *p) {
             token = create_token(p, TK_NUM);
             int n = strtol(p, &p, 0);
             token->val = n;
-        }
-        else if (strchr("+-*/()", *p))
-        {
-            token = create_token(p, TK_RESERVED);
-            p += 1;
-        }
-        else
-        {
-            token = create_token(p, TK_OTHER);
-            int length = strlen(token->raw);
-            p += length;
+        } else {
+            int l = check_reserved(p);
+            if (l) {
+                token = create_token(p, TK_RESERVED);
+                token->length = l;
+                p += l;
+            } else {
+                token = create_token(p, TK_OTHER);
+                int length = strlen(token->raw);
+                p += length;
+            }
         }
 
         if (ret == NULL)
@@ -75,7 +87,7 @@ void dump_token(Token *token) {
     printf("[+] raw string: %s\n", token->raw);
 }
 
-int is_reserved(Token *token, char operator) {
+int is_reserved(Token *token, char *reserved) {
     if (token == NULL) {
         return 0;
     }
@@ -84,7 +96,9 @@ int is_reserved(Token *token, char operator) {
         return 0;
     }
 
-    if (token->raw[0] == operator) {
+    int l = token->length;
+
+    if (strncmp(token->raw, reserved, l) == 0) {
         return 1;
     }
 

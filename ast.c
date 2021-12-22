@@ -30,11 +30,11 @@ void next_head_ctx(Context *ctx) {
 void prim_parse(Context *ctx) {
     Token *head = ctx->head;
 
-    if (is_reserved(head, '(')) {
+    if (is_reserved(head, "(")) {
         next_head_ctx(ctx);
         expr_parse(ctx);
 
-        if (is_reserved(ctx->head, ')')) {
+        if (is_reserved(ctx->head, ")")) {
             next_head_ctx(ctx);
             return;
         } else {
@@ -54,10 +54,10 @@ void prim_parse(Context *ctx) {
 }
 
 void un_parse(Context *ctx) {
-    if (is_reserved(ctx->head, '+')) {
+    if (is_reserved(ctx->head, "+")) {
         next_head_ctx(ctx);
         prim_parse(ctx);
-    } else if (is_reserved(ctx->head, '-')) {
+    } else if (is_reserved(ctx->head, "-")) {
         next_head_ctx(ctx);
         prim_parse(ctx);
         Node *lhs = create_num_node(0);
@@ -76,12 +76,12 @@ void mul_parse(Context *ctx) {
     Node *node = ctx->ret;
 
     while (1) {
-        if (is_reserved(ctx->head, '*')) {
+        if (is_reserved(ctx->head, "*")) {
             next_head_ctx(ctx);
             un_parse(ctx);
             Node *rhs = ctx->ret;
             node = create_operator_node(ND_MUL, node, rhs);
-        } else if (is_reserved(ctx->head, '/')) {
+        } else if (is_reserved(ctx->head, "/")) {
             next_head_ctx(ctx);
             un_parse(ctx);
             Node *rhs = ctx->ret;
@@ -98,12 +98,12 @@ void expr_parse(Context *ctx) {
     Node *node = ctx->ret;
 
     while (1) {
-        if (is_reserved(ctx->head, '+')) {
+        if (is_reserved(ctx->head, "+")) {
             next_head_ctx(ctx);
             mul_parse(ctx);
             Node *rhs = ctx->ret;
             node = create_operator_node(ND_ADD, node, rhs);
-        } else if (is_reserved(ctx->head, '-')) {
+        } else if (is_reserved(ctx->head, "-")) {
             next_head_ctx(ctx);
             mul_parse(ctx);
             Node *rhs = ctx->ret;

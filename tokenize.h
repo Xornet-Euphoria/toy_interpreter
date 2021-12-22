@@ -13,8 +13,9 @@ struct Token {
     Token *next;
     int val;
     char *raw;
+    int length;
 };
 
 extern Token *tokenize(char *p);
 extern void dump_token(Token *token);
-extern int is_reserved(Token *token, char operator);
+extern int is_reserved(Token *token, char *reserved);
