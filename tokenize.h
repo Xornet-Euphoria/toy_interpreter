@@ -3,7 +3,8 @@ typedef enum
     TK_RESERVED,
     TK_NUM,
     TK_EOF,
-    TK_OTHER, // for debug and eliminated in the future
+    TK_IDENT,
+    TK_OTHER // for debug and eliminated in the future
 } TokenType;
 
 typedef struct Token Token;

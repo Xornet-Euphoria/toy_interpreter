@@ -8,7 +8,11 @@ char *reserved_tokens[] = {
     "+", "-", "*", "/", "(", ")",
     "==", "!="
 };
-const int reserved_count = sizeof(reserved_tokens);
+// added in the futured. (currently, RESERVED variable literally)
+char *reserved_string_tokens[] = {
+
+};
+const int reserved_count = sizeof(reserved_tokens) / sizeof(char *);
 
 Token *create_token(char *p, TokenType type) {
     Token *ret = malloc(sizeof(Token));
@@ -57,9 +61,15 @@ Token *tokenize(char *p) {
                 token->length = l;
                 p += l;
             } else {
-                token = create_token(p, TK_OTHER);
-                int length = strlen(token->raw);
-                p += length;
+                char *raw = p;
+                int l = 0;
+                while (!check_reserved(p) && !isspace(*p))
+                {
+                    l++;
+                    p++;
+                }
+                token = create_token(raw, TK_IDENT);
+                token->length = l;
             }
         }
 
